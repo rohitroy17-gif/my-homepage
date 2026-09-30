@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: 'My Homepage',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorSchemeSeed: Colors.indigo,
+        colorSchemeSeed: Colors.blue,
         useMaterial3: true,
       ),
       home: const HomePage(),
@@ -29,183 +29,174 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 0;
+  int selectedTab = 0;
 
-  final List<Map<String, dynamic>> _categories = [
-    {'icon': Icons.school, 'label': 'Courses'},
-    {'icon': Icons.assignment, 'label': 'Assignments'},
-    {'icon': Icons.calendar_month, 'label': 'Schedule'},
-    {'icon': Icons.grade, 'label': 'Results'},
-    {'icon': Icons.people, 'label': 'Friends'},
-    {'icon': Icons.settings, 'label': 'Settings'},
-  ];
-
-  final List<Map<String, String>> _featured = [
-    {'title': 'Flutter Basics', 'subtitle': 'Learn widgets and layouts'},
-    {'title': 'Dart Programming', 'subtitle': 'Master the language'},
-    {'title': 'State Management', 'subtitle': 'Provider, Bloc and more'},
+  final List<String> courses = [
+    'Flutter Basics',
+    'Dart Programming',
+    'Web Development',
+    'Machine Learning',
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Home'),
+        title: const Text('My Homepage'),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_none),
-            onPressed: () {},
-          ),
-        ],
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const UserAccountsDrawerHeader(
-              accountName: Text('Rohit'),
-              accountEmail: Text('rohit@example.com'),
-              currentAccountPicture: CircleAvatar(child: Text('R')),
-            ),
-            ListTile(
-              leading: const Icon(Icons.home),
-              title: const Text('Home'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.info),
-              title: const Text('About'),
-              onTap: () => Navigator.pop(context),
-            ),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Logout'),
-              onTap: () => Navigator.pop(context),
-            ),
-          ],
-        ),
-      ),
-      body: SingleChildScrollView(
+      body: ListView(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Welcome banner
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Colors.indigo, Colors.blueAccent],
+        children: [
+          // Welcome banner
+          Container(
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome!',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                borderRadius: BorderRadius.circular(16),
-              ),
-              child: const Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Welcome back!',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Ready to learn something new today?',
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // Search bar
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Search...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+                SizedBox(height: 6),
+                Text(
+                  'Start learning something new today.',
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
-              ),
+              ],
             ),
-            const SizedBox(height: 24),
+          ),
+          const SizedBox(height: 24),
 
-            // Categories
-            const Text(
-              'Categories',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _categories.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-              ),
-              itemBuilder: (context, index) {
-                final item = _categories[index];
-                return InkWell(
-                  onTap: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${item['label']} tapped')),
-                    );
-                  },
-                  child: Card(
-                    elevation: 3,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(item['icon'], size: 36, color: Colors.indigo),
-                        const SizedBox(height: 8),
-                        Text(item['label']),
-                      ],
+          // Quick action buttons
+          const Text(
+            'Quick Links',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              quickButton(Icons.school, 'Courses'),
+              quickButton(Icons.assignment, 'Tasks'),
+              quickButton(Icons.person, 'Profile'),
+            ],
+          ),
+          const SizedBox(height: 24),
+
+          // Course list
+          const Text(
+            'Popular Courses',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 12),
+          for (final course in courses)
+            Card(
+              child: ListTile(
+                leading: const CircleAvatar(child: Icon(Icons.book)),
+                title: Text(course),
+                subtitle: const Text('Tap to see details'),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailPage(title: course),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
-            const SizedBox(height: 24),
-
-            // Featured list
-            const Text(
-              'Featured',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _featured.length,
-              itemBuilder: (context, index) {
-                final item = _featured[index];
-                return Card(
-                  child: ListTile(
-                    leading: const CircleAvatar(child: Icon(Icons.book)),
-                    title: Text(item['title']!),
-                    subtitle: Text(item['subtitle']!),
-                    trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () {},
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+        ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        onTap: (index) => setState(() => _selectedIndex = index),
+        currentIndex: selectedTab,
+        onTap: (index) {
+          setState(() {
+            selectedTab = index;
+          });
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Explore'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
+      ),
+    );
+  }
+
+  // A small reusable widget for the quick link buttons
+  Widget quickButton(IconData icon, String label) {
+    return InkWell(
+      onTap: () {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('$label clicked')),
+        );
+      },
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.blue.shade100,
+            child: Icon(icon, size: 30, color: Colors.blue),
+          ),
+          const SizedBox(height: 6),
+          Text(label),
+        ],
+      ),
+    );
+  }
+}
+
+// Second page that opens when you tap a course
+class DetailPage extends StatelessWidget {
+  final String title;
+
+  const DetailPage({super.key, required this.title});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        backgroundColor: Colors.blue,
+        foregroundColor: Colors.white,
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.menu_book, size: 80, color: Colors.blue),
+              const SizedBox(height: 16),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'This is the detail page for the course.',
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Go Back'),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
